@@ -41,6 +41,7 @@ fi
 # 6. Systemd service
 sudo cp /opt/project-campfire/systemd/campfire.service /etc/systemd/system/
 sudo systemctl daemon-reexec
-sudo systemctl enable --now campfire.service
+sudo systemctl enable campfire.service
+sudo systemctl restart campfire.service
 
 echo "✅ Campfire bot installed and running!"
