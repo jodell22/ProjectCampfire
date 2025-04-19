@@ -21,7 +21,6 @@ sudo chown -R campfire:campfire "$INSTALL_DIR"
 
 # 4. Switch to campfire user and finish setup
 sudo -u campfire bash <<'EOF'
-
 cd /opt/project-campfire
 
 # Set up virtualenv
@@ -30,22 +29,8 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# Environment config
-echo ""
-echo "🔑 Let's set up your .env file."
-read -p "Discord Bot Token: " discord_token
-read -p "OpenAI API Key: " openai_key
-read -p "DM Room Channel ID: " dm_channel
-read -p "World Channel ID: " world_channel
-
-cat > .env <<ENV
-DISCORD_BOT_TOKEN=$discord_token
-OPENAI_API_KEY=$openai_key
-DM_ROOM_CHANNEL_ID=$dm_channel
-WORLD_CHANNEL_ID=$world_channel
-ENV
-
-echo "✅ .env file created!"
+# Run interactive .env setup
+python3 scripts/setup_env.py
 EOF
 
 # 5. Systemd service
