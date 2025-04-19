@@ -28,7 +28,7 @@ async def asknova(ctx, *, question):
     await ctx.send("Thinking... 🔮")
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-4-turbo",
             messages=[{"role": "user", "content": question}],
             temperature=0.7
         )
