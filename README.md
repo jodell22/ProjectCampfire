@@ -37,6 +37,12 @@ These enhance functionality but aren’t required:
 
 
 ===============================
-Install command:
+
+## 🔧 Quick Install
+
+Run this command on a fresh Ubuntu server:
+
+```bash
 curl -sSL https://raw.githubusercontent.com/jodell22/ProjectCampfire/main/scripts/install.sh | bash
+
 
