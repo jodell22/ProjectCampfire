@@ -43,7 +43,7 @@ cat <<EOF
 🔧 Prep complete. Now switch to the 'campfire' user and finish setup:
 
     sudo su - campfire
-    python3 $INSTALL_DIR/scripts/setup_env.py
+    python3 $INSTALL_DIR/scripts/setup.py
 
 Once complete, run:
 
