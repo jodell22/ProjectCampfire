@@ -42,8 +42,8 @@ These enhance functionality but aren’t required:
 
 Run this command on a fresh Ubuntu server:
 
-```python3
-curl -sSL https://raw.githubusercontent.com/jodell22/ProjectCampfire/main/scripts/install.sh | python3
+```bash
+curl -sSL https://raw.githubusercontent.com/jodell22/ProjectCampfire/main/scripts/install.sh | bash
 
 
 
