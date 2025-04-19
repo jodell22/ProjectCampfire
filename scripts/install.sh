@@ -30,8 +30,8 @@ pip install --upgrade pip
 pip install -r requirements.txt
 EOF
 
-# 5. Run interactive .env setup outside heredoc
-sudo -u campfire python3 /opt/project-campfire/scripts/setup_env.py
+# 5. Run interactive .env setup
+sudo su - campfire -c "python3 /opt/project-campfire/scripts/setup_env.py"
 
 # 6. Systemd service
 sudo cp /opt/project-campfire/systemd/campfire.service /etc/systemd/system/
