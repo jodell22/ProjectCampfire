@@ -49,7 +49,7 @@ async def narrategpt(ctx, *, instruction):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             messages=messages,
             temperature=0.85
         )
@@ -91,7 +91,7 @@ async def asknova(ctx, *, question):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             messages=messages,
             temperature=0.7
         )
