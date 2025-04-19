@@ -1,5 +1,4 @@
 #!/bin/bash
-# scripts/install.sh - Campfire Install Script
 
 set -e
 
