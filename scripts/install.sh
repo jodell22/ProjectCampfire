@@ -1,47 +1,60 @@
-#!/bin/bash
-# scripts/install.sh - Campfire Install Script
+#!/usr/bin/env python3
 
-set -e
+import os
+import subprocess
 
-# 1. Create campfire user if it doesn't exist
-if ! id "campfire" &>/dev/null; then
-  echo "👤 Creating 'campfire' user..."
-  sudo useradd -m -s /bin/bash campfire
-fi
+print("\n🔧 Nova Installer")
+print("-----------------")
 
-# 2. System packages
-sudo apt update && sudo apt install -y python3 python3-venv git
+INSTALL_DIR = "/opt/project-campfire"
+ENV_FILE = os.path.join(INSTALL_DIR, ".env")
 
-# 3. Project location
-INSTALL_DIR="/opt/project-campfire"
-if [ ! -d "$INSTALL_DIR" ]; then
-  sudo git clone https://github.com/jodell22/ProjectCampfire.git "$INSTALL_DIR"
-fi
-sudo chown -R campfire:campfire "$INSTALL_DIR"
+# 1. Ensure campfire user exists
+if subprocess.call(["id", "campfire"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
+    print("👤 Creating 'campfire' user...")
+    subprocess.run(["sudo", "useradd", "-m", "-s", "/bin/bash", "campfire"], check=True)
 
-# 4. Switch to campfire user and finish setup
-sudo -u campfire bash <<'EOF'
-cd /opt/project-campfire
+# 2. Install required packages
+print("📦 Installing system packages...")
+subprocess.run(["sudo", "apt", "update"], check=True)
+subprocess.run(["sudo", "apt", "install", "-y", "python3", "python3-venv", "git"], check=True)
 
-# Set up virtualenv
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-EOF
+# 3. Clone project if not present
+if not os.path.isdir(INSTALL_DIR):
+    print("📁 Cloning Project Campfire...")
+    subprocess.run(["sudo", "git", "clone", "https://github.com/jodell22/ProjectCampfire.git", INSTALL_DIR], check=True)
+subprocess.run(["sudo", "chown", "-R", "campfire:campfire", INSTALL_DIR], check=True)
 
-# 5. Run interactive .env setup only if not already present
-if [ ! -f "$INSTALL_DIR/.env" ]; then
-  echo "🔑 Starting interactive environment setup..."
-  sudo su - campfire -c "python3 /opt/project-campfire/scripts/setup_env.py"
-else
-  echo "⚠️  Skipping .env setup — already exists at $INSTALL_DIR/.env"
-fi
+# 4. Setup Python environment
+print("🐍 Setting up virtual environment...")
+subprocess.run(["sudo", "-u", "campfire", "python3", "-m", "venv", os.path.join(INSTALL_DIR, "venv")], check=True)
+subprocess.run(["sudo", "-u", "campfire", os.path.join(INSTALL_DIR, "venv", "bin", "pip"), "install", "--upgrade", "pip"], check=True)
+subprocess.run(["sudo", "-u", "campfire", os.path.join(INSTALL_DIR, "venv", "bin", "pip"), "install", "-r", os.path.join(INSTALL_DIR, "requirements.txt")], check=True)
+
+# 5. Run interactive .env setup if missing
+if not os.path.isfile(ENV_FILE):
+    print("🔑 Let's configure your bot environment...")
+    token = input("Discord Bot Token: ")
+    api_key = input("OpenAI API Key: ")
+    dm_id = input("DM Room Channel ID: ")
+    world_id = input("World Channel ID: ")
+
+    with open("/tmp/.env", "w") as f:
+        f.write(f"DISCORD_BOT_TOKEN={token}\n")
+        f.write(f"OPENAI_API_KEY={api_key}\n")
+        f.write(f"DM_ROOM_CHANNEL_ID={dm_id}\n")
+        f.write(f"WORLD_CHANNEL_ID={world_id}\n")
+
+    subprocess.run(["sudo", "mv", "/tmp/.env", ENV_FILE], check=True)
+    subprocess.run(["sudo", "chown", "campfire:campfire", ENV_FILE], check=True)
+else:
+    print(f"⚠️  Skipping .env setup — already exists at {ENV_FILE}")
 
 # 6. Systemd service
-sudo cp /opt/project-campfire/systemd/campfire.service /etc/systemd/system/
-sudo systemctl daemon-reexec
-sudo systemctl enable campfire.service
-sudo systemctl restart campfire.service
+print("⚙️  Enabling systemd service...")
+subprocess.run(["sudo", "cp", os.path.join(INSTALL_DIR, "systemd", "campfire.service"), "/etc/systemd/system/"], check=True)
+subprocess.run(["sudo", "systemctl", "daemon-reexec"], check=True)
+subprocess.run(["sudo", "systemctl", "enable", "campfire.service"], check=True)
+subprocess.run(["sudo", "systemctl", "restart", "campfire.service"], check=True)
 
-echo "✅ Campfire bot installed and running!"
+print("\n✅ Campfire bot installed and running!")
