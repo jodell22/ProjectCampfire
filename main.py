@@ -25,17 +25,28 @@ async def ping(ctx):
 # AskNova command using OpenAI
 @bot.command()
 async def asknova(ctx, *, question):
+    if ctx.channel.id not in [DM_ROOM_ID, WORLD_ROOM_ID]:
+        return  # Ignore commands outside allowed channels
+
     await ctx.send("Thinking... 🔮")
+
     try:
+        if ctx.channel.id == DM_ROOM_ID:
+            prompt = f"[DM ONLY]\n{question}"
+        elif ctx.channel.id == WORLD_ROOM_ID:
+            prompt = f"[WORLD VIEW]\n{question}"
+
         response = openai.ChatCompletion.create(
             model="gpt-4-turbo",
-            messages=[{"role": "user", "content": question}],
+            messages=[{"role": "user", "content": prompt}],
             temperature=0.7
         )
         answer = response.choices[0].message.content.strip()
         await ctx.send(answer)
+
     except Exception as e:
         await ctx.send(f"Error: {e}")
+
 
 # Start the bot
 bot.run(TOKEN)
