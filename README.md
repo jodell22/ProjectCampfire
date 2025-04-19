@@ -11,3 +11,25 @@ The bot supports:
 Whether you're running an epic saga or just a one-shot with friends, Campfire makes it feel like you're huddled around the real thing.
 
 *Let the stories burn bright.*
+
+
+🔐 Discord Bot Permissions
+To function correctly across all channels in the Project Campfire server, the bot requires the following permissions:
+
+Required Permissions
+These are necessary for basic functionality:
+
+- Read Messages/View Channels – To see messages in channels it has access to
+- Send Messages – To respond to prompts and interact with users
+- Embed Links – To format messages with rich content
+- Attach Files – For sending logs, images, or exports
+- Read Message History – So it can reply to previous messages intelligently
+- Use Slash Commands – For modern interactions and commands
+
+Optional (but recommended) Permissions
+These enhance functionality but aren’t required:
+
+- Manage Messages – Allows bot to delete or edit its own messages
+- Add Reactions – For reaction-based input or voting
+- Manage Webhooks – If you're integrating dynamic notifications or storytelling triggers
+- Manage Roles – If the bot assigns character roles or world status
