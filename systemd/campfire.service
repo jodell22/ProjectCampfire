@@ -1,0 +1,14 @@
+[Unit]
+Description=Campfire Discord Bot
+After=network.target
+
+[Service]
+Type=simple
+User=campfire
+WorkingDirectory=/opt/project-campfire
+ExecStart=/opt/project-campfire/venv/bin/python /opt/project-campfire/main.py
+Restart=on-failure
+EnvironmentFile=/opt/project-campfire/.env
+
+[Install]
+WantedBy=multi-user.target
