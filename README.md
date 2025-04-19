@@ -12,6 +12,7 @@ Whether you're running an epic saga or just a one-shot with friends, Campfire ma
 
 *Let the stories burn bright.*
 
+===============================
 
 🔐 Discord Bot Permissions
 To function correctly across all channels in the Project Campfire server, the bot requires the following permissions:
