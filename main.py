@@ -83,6 +83,15 @@ async def nova_prompt(ctx, *, system_prompt):
     custom_system_prompts[ctx.guild.id] = system_prompt
     await ctx.send(f"🧠 System prompt updated!")
 
+@bot.command()
+async def newtale(ctx):
+    if ctx.channel.id != DM_ROOM_ID:
+        return
+
+    if ctx.guild.id in custom_system_prompts:
+        del custom_system_prompts[ctx.guild.id]
+    await ctx.send("📜 A new tale begins. Nova's memory has been cleared.")
+
 # Basic ping command
 @bot.command()
 async def ping(ctx):
