@@ -1,7 +1,7 @@
 import os
 import discord
 from discord.ext import commands
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 
 custom_system_prompts = {}
@@ -13,9 +13,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 DM_ROOM_ID = int(os.getenv("DM_ROOM_CHANNEL_ID"))
 WORLD_ROOM_ID = int(os.getenv("WORLD_CHANNEL_ID"))
 
-
-# Setup OpenAI
-openai.api_key = OPENAI_API_KEY
+# Setup OpenAI client
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Setup Bot
 intents = discord.Intents.default()
@@ -49,7 +48,7 @@ async def narrategpt(ctx, *, instruction):
     ]
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=messages,
             temperature=0.85
@@ -91,7 +90,7 @@ async def asknova(ctx, *, question):
     await ctx.send("Thinking... 🔮")
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=messages,
             temperature=0.7
@@ -101,8 +100,6 @@ async def asknova(ctx, *, question):
 
     except Exception as e:
         await ctx.send(f"Error: {e}")
-
-
 
 # Start the bot
 bot.run(TOKEN)
