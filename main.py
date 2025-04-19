@@ -90,7 +90,12 @@ async def newtale(ctx):
 
     if ctx.guild.id in custom_system_prompts:
         del custom_system_prompts[ctx.guild.id]
-    await ctx.send("📜 A new tale begins. Nova's memory has been cleared.")
+
+    message = "📜 A new tale begins. Nova's memory has been cleared."
+    await ctx.send(message)
+    world_channel = bot.get_channel(WORLD_ROOM_ID)
+    if world_channel:
+        await world_channel.send(message)
 
 # Basic ping command
 @bot.command()
