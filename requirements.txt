@@ -1,0 +1,3 @@
+# /opt/project-campfire/requirements.txt
+discord.py
+openai
