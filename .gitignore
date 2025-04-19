@@ -32,10 +32,11 @@ Thumbs.db
 dist/
 build/
 
-# Project Campfire logs or runtime files
+# Project Campfire logs db or runtime files
 logs/
 *.db
 *.sqlite3
+data/
 
 # Secrets or sensitive files (adjust as needed)
 secrets.yaml

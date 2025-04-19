@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import db.database  # triggers DB creation on import
 
 print("\n🔧 Nova Setup Wizard")
 print("------------------------")
