@@ -30,8 +30,13 @@ pip install --upgrade pip
 pip install -r requirements.txt
 EOF
 
-# 5. Run interactive .env setup
-sudo su - campfire -c "python3 /opt/project-campfire/scripts/setup_env.py"
+# 5. Run interactive .env setup only if not already present
+if [ ! -f "$INSTALL_DIR/.env" ]; then
+  echo "🔑 Starting interactive environment setup..."
+  sudo su - campfire -c "python3 /opt/project-campfire/scripts/setup_env.py"
+else
+  echo "⚠️  Skipping .env setup — already exists at $INSTALL_DIR/.env"
+fi
 
 # 6. Systemd service
 sudo cp /opt/project-campfire/systemd/campfire.service /etc/systemd/system/
