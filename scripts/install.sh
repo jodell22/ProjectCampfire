@@ -28,12 +28,12 @@ python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-
-# Run interactive .env setup
-python3 scripts/setup_env.py
 EOF
 
-# 5. Systemd service
+# 5. Run interactive .env setup outside heredoc
+sudo -u campfire python3 /opt/project-campfire/scripts/setup_env.py
+
+# 6. Systemd service
 sudo cp /opt/project-campfire/systemd/campfire.service /etc/systemd/system/
 sudo systemctl daemon-reexec
 sudo systemctl enable --now campfire.service
