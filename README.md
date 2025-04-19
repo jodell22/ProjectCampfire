@@ -34,3 +34,9 @@ These enhance functionality but aren’t required:
 - Add Reactions – For reaction-based input or voting
 - Manage Webhooks – If you're integrating dynamic notifications or storytelling triggers
 - Manage Roles – If the bot assigns character roles or world status
+
+
+===============================
+Install command:
+curl -sSL https://raw.githubusercontent.com/jodell22/ProjectCampfire/main/scripts/install.sh | bash
+
