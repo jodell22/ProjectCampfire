@@ -5,6 +5,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 custom_system_prompts = {}
+current_model = "gpt-3.5-turbo"
 
 # Load .env file
 load_dotenv()
@@ -20,6 +21,20 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
+
+@bot.command()
+async def setmodel(ctx, model: str):
+    global current_model
+    if ctx.channel.id != DM_ROOM_ID:
+        return
+
+    allowed_models = ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"]
+    if model not in allowed_models:
+        await ctx.send(f"❌ Unsupported model. Choose from: {', '.join(allowed_models)}")
+        return
+
+    current_model = model
+    await ctx.send(f"✅ Nova is now using `{model}`.")
 
 @bot.command()
 async def narrate(ctx, *, text):
@@ -49,7 +64,7 @@ async def narrategpt(ctx, *, instruction):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=current_model,
             messages=messages,
             temperature=0.85
         )
@@ -91,7 +106,7 @@ async def asknova(ctx, *, question):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=current_model,
             messages=messages,
             temperature=0.7
         )
