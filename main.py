@@ -21,6 +21,17 @@ async def setup_hook():
     await bot.load_extension("cogs.memory")
     await bot.load_extension("cogs.players")
     await bot.load_extension("cogs.playerui")
+    await bot.load_extension("cogs.time")
+
+    # Optional: Sync to a specific test guild for faster dev cycle
+    GUILD_ID = 411698696514699286  # 🔁 Replace with your test server's ID
+    guild = discord.Object(id=GUILD_ID)
+    await bot.tree.sync(guild=guild)
+    print(f"✅ Slash commands synced to guild {GUILD_ID}")
+
+    print("📋 Commands currently registered in this guild:")
+    for command in bot.tree.get_commands(guild=guild):
+        print(f" - /{command.name}: {command.description}")
 
 # Run the bot
 bot.run(TOKEN)

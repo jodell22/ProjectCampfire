@@ -1,62 +1,50 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
-from db import helpers
+from memoryManager import addMemory
 
-MEMORY_USAGE_MSG = ("Usage:\n"
-                    "`!remember key: value`\n"
-                    "`!recall key`\n"
-                    "`!memlist`\n"
-                    "`!forget key`\n"
-                    "`!memclear`")
-
-class Memory(commands.Cog):
+class MemoryCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        print("📌 MemoryCog initialized")
 
-    @commands.command()
-    async def remember(self, ctx, *, entry=None):
-        if not entry or ":" not in entry:
-            await ctx.send(MEMORY_USAGE_MSG)
-            return
-        key, value = map(str.strip, entry.split(":", 1))
-        helpers.set_memory(key, value)
-        await ctx.send(f"🧠 Remembered: **{key}** → {value}")
+    @commands.hybrid_command(name="remember", description="Record a memory for a character or player")
+    async def remember(
+        self, ctx: commands.Context,
+        subject: str,
+        text: str,
+        tags: str = ""
+    ):
+        try:
+            tag_list = [tag.strip() for tag in tags.split(",")] if tags else []
+            addMemory(subject=subject, text=text, tags=tag_list)
+            await ctx.reply(
+                f"💾 Memory saved for **{subject}**:\n> {text}", ephemeral=True
+            )
+        except Exception as e:
+            await ctx.reply(
+                f"⚠️ Error storing memory: {e}", ephemeral=True
+            )
 
-    @commands.command()
-    async def recall(self, ctx, *, key=None):
-        if not key:
-            await ctx.send(MEMORY_USAGE_MSG)
-            return
-        value = helpers.get_memory(key)
-        if value:
-            await ctx.send(f"📖 {key}: {value}")
-        else:
-            await ctx.send("🤔 I don't remember that one.")
+    @commands.hybrid_command(name="recall", description="View stored memories for a subject")
+    async def recall(self, ctx: commands.Context, subject: str):
+        from memoryManager import listMemories
+        try:
+            entries = listMemories(subject)
+            if not entries:
+                await ctx.reply(f"🔍 No memories found for **{subject}**.", ephemeral=True)
+                return
 
-    @commands.command()
-    async def memlist(self, ctx):
-        memory = helpers.get_all_memory()
-        if not memory:
-            await ctx.send("🧠 Memory is empty.")
-            return
-        keys = sorted(memory.keys())
-        await ctx.send("🧾 Known entries:\n" + "\n".join(f"- {k}" for k in keys))
+            response = f"🧠 Memories for **{subject}**:\n"
+            for mid, _, text in entries[:5]:
+                response += f"- {text}\n"
 
-    @commands.command()
-    async def forget(self, ctx, *, key=None):
-        if not key:
-            await ctx.send(MEMORY_USAGE_MSG)
-            return
-        if helpers.get_memory(key):
-            helpers.delete_memory(key)
-            await ctx.send(f"🗑️ Forgot: **{key}**")
-        else:
-            await ctx.send("🤔 I don't remember that one.")
+            await ctx.reply(response, ephemeral=True)
+        except Exception as e:
+            await ctx.reply(f"⚠️ Error retrieving memories: {e}", ephemeral=True)
 
-    @commands.command()
-    async def memclear(self, ctx):
-        helpers.clear_memory()
-        await ctx.send("💥 All memory cleared.")
+
 
 async def setup(bot):
-    await bot.add_cog(Memory(bot))
+    await bot.add_cog(MemoryCog(bot))
+

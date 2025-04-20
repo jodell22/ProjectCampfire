@@ -35,10 +35,32 @@ def initialize_db():
     # Memory table
     c.execute("""
     CREATE TABLE IF NOT EXISTS memory (
-        key TEXT PRIMARY KEY,
-        value TEXT
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        subject TEXT NOT NULL,
+        text TEXT NOT NULL,
+        tags TEXT,
+        participants TEXT,
+        date TEXT DEFAULT CURRENT_TIMESTAMP,
+        importance REAL DEFAULT 0.5,
+        source TEXT DEFAULT 'event',
+        private BOOLEAN DEFAULT 0
     )
     """)
+
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS world_time (
+            id INTEGER PRIMARY KEY,
+            current_date TEXT NOT NULL,
+            current_time TEXT NOT NULL,
+            turn_count INTEGER DEFAULT 0,
+            notes TEXT
+        )
+    ''')
+
+    c.execute("SELECT COUNT(*) FROM world_time")
+    if c.fetchone()[0] == 0:
+        c.execute("INSERT INTO world_time (current_date, current_time, turn_count, notes) VALUES (?, ?, ?, ?)",
+                  ("1 Stormtide 843", "08:00 AM", 0, ""))
 
     conn.commit()
     conn.close()
