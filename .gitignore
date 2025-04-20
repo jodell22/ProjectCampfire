@@ -16,6 +16,7 @@ env/
 
 # Environment variable files
 .env
+!/.env.template
 .env.*
 
 # Ansible cache
